@@ -1,0 +1,72 @@
+version: '3.8'
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml
+    command: --config /app/config.yaml --port 4000
+    env_file:
+      - .env
+    networks:
+      - webui-network
+    restart: always
+  mcpo:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcpo
+    ports:
+      - "${MCP_PORT:-8000}:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./config.json:/app/config.json
+    command: ["--host", "0.0.0.0", "--port", "8000", "--config", "/app/config.json"]
+    restart: unless-stopped
+    networks:
+      - webui-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/watsonx-data/openapi.json"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - "${WEBUI_PORT:-3000}:8080"
+    environment:
+      - WEBUI_NAME=${WEBUI_NAME:-Claude-Watsonx-Studio}
+      - ENABLE_OLLAMA_API=False
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ENABLE_PERSISTENT_CONFIG=False 
+      - OPENAI_API_BASE_URL=http://litellm:4000/v1
+      - OPENAI_API_KEY=anything        # LiteLLM doesn't need a real key here
+      - ENABLE_OPENAI_API=True
+      - ENABLE_ANTHROPIC_API=False     # disable native broken Anthropic connection
+      # Models (LiteLLM prefixes with "anthropic/")
+      - DEFAULT_MODELS=anthropic/claude-sonnet-4-6
+      - MODEL_FILTER_ENABLED=True
+      - MODEL_FILTER_LIST=anthropic/claude-opus-4-6;anthropic/claude-sonnet-4-6;anthropic/claude-haiku-4-5-20251001
+      - WEBUI_ADMIN_EMAIL=${WEBUI_ADMIN_EMAIL:-admin@ibm.com}
+      - WEBUI_ADMIN_PASSWORD=${WEBUI_ADMIN_PASSWORD:-pass123}
+      - WEBUI_ADMIN_NAME=${WEBUI_ADMIN_NAME:-Admin}
+      - TOOL_SERVER_CONNECTIONS=[{"url":"http://mcpo:8000/watsonx-data","path":"/openapi.json","auth_type":"none","key":"","config":{"enable":true},"info":{"name":"IBM watsonx.data","description":"IBM watsonx.data MCP tools via Presto"}}]
+    volumes:
+      - open-webui-data:/app/backend/data
+    restart: always
+    networks:
+      - webui-network
+    depends_on:
+      litellm:
+        condition: service_started
+      mcpo:
+        condition: service_healthy
+
+networks:
+  webui-network:
+    driver: bridge
+
+volumes:
+  open-webui-data:

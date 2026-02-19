@@ -1,0 +1,8 @@
+{ 
+  "mcpServers": { 
+    "watsonx-data": { 
+      "command": "uv", 
+      "args": ["run","ibm-watsonxdata-mcp-server", "--transport", "stdio"]
+    } 
+  } 
+}
