@@ -31,7 +31,38 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-
+# NEW: MetaMCP to provide the SSE endpoint for IBM Bob
+  # The SSE bridge for IBM Bob
+  bob-bridge-watsonx-data:
+    build:
+      context: .
+      dockerfile: Dockerfile.bob
+    ports:
+      - "12006:12006"
+    env_file: .env
+    # This uses the built-in HTTP server mode of the watsonx-data server
+    command: >
+      ibm-watsonxdata-mcp-server 
+      --transport streamable-http 
+      --host 0.0.0.0 
+      --port 12006
+    networks:
+      - webui-network
+  bob-bridge-watsonx-di:
+    build:
+      context: .
+      dockerfile: Dockerfile.bob
+    ports:
+      - "12007:12007"
+    env_file: .env
+    # This uses the built-in HTTP server mode of the watsonx-data server
+    command: >
+      ibm-watsonxdata-mcp-server 
+      --transport streamable-http 
+      --host 0.0.0.0 
+      --port 12007
+    networks:
+      - webui-network
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     ports:

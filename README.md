@@ -35,5 +35,14 @@
    docker-compose up -d
 
 5. Open http://localhost:3000
+6. Start a new chat, ensure to select model of your choice based on your configuration.
+   
+   <img src="images/image1.png" alt="Select a model" width="500" >
 
-6. Start chatting with Claude about your watsonx.data! 🎉
+
+8. Ensure the MCP tool is selected so the model can leverage it.
+
+   <img src="images/image2.png" alt="Select a tool" width="500" >
+   
+9. Start chatting with Claude about your watsonx.data! 🎉
+

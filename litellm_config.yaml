@@ -15,27 +15,68 @@ model_list:
       model: anthropic/claude-haiku-4-5-20251001
       api_key: os.environ/ANTHROPIC_API_KEY
 
-  # IBM watsonx.ai models
-  - model_name: ibm/granite-3-8b-instruct
+    # Primary - Best for MCP tool calling + complex SQL/lineage reasoning
+  - model_name: meta-llama/llama-3-3-70b-instruct
     litellm_params:
-      model: watsonx/ibm/granite-3-8b-instruct
+      model: watsonx/meta-llama/llama-3-3-70b-instruct
       api_key: os.environ/WATSONX_API_KEY
       project_id: os.environ/WATSONX_PROJECT_ID
+      api_base: os.environ/WATSONX_URL
 
-  - model_name: ibm/granite-3-2b-instruct
+  # MoE - good structured output + tool use, lower latency
+  - model_name: meta-llama/llama-4-maverick-17b-128e-instruct-fp8
     litellm_params:
-      model: watsonx/ibm/granite-3-2b-instruct
+      model: watsonx/meta-llama/llama-4-maverick-17b-128e-instruct-fp8
       api_key: os.environ/WATSONX_API_KEY
       project_id: os.environ/WATSONX_PROJECT_ID
+      api_base: os.environ/WATSONX_URL
 
-  - model_name: meta-llama/llama-3-2-90b-vision-instruct
+  # Mistral - reliable function calling, good T2SQL
+  - model_name: mistralai/mistral-medium-2505
     litellm_params:
-      model: watsonx/meta-llama/llama-3-2-90b-vision-instruct
+      model: watsonx/mistralai/mistral-medium-2505
       api_key: os.environ/WATSONX_API_KEY
       project_id: os.environ/WATSONX_PROJECT_ID
+      api_base: os.environ/WATSONX_URL
 
-  - model_name: meta-llama/llama-3-1-70b-instruct
+  # Lightweight fast model - simple lookups, routing
+  - model_name: mistralai/mistral-small-3-1-24b-instruct-2503
     litellm_params:
-      model: watsonx/meta-llama/llama-3-1-70b-instruct
+      model: watsonx/mistralai/mistral-small-3-1-24b-instruct-2503
       api_key: os.environ/WATSONX_API_KEY
       project_id: os.environ/WATSONX_PROJECT_ID
+      api_base: os.environ/WATSONX_URL
+
+  # IBM Granite - fast, good for Iceberg/watsonx.data native queries
+  - model_name: ibm/granite-3-3-8b-instruct
+    litellm_params:
+      model: watsonx/ibm/granite-3-3-8b-instruct
+      api_key: os.environ/WATSONX_API_KEY
+      project_id: os.environ/WATSONX_PROJECT_ID
+      api_base: os.environ/WATSONX_URL
+
+  # Nemotron Super 120B - heavy reasoning (requires active deployment)
+  - model_name: openai/gpt-oss-120b
+    litellm_params:
+      model: watsonx/openai/gpt-oss-120b
+      api_key: os.environ/WATSONX_API_KEY
+      project_id: os.environ/WATSONX_PROJECT_ID
+      api_base: os.environ/WATSONX_URL
+
+  # ─── WATSONX - EMBEDDINGS ─────────────────────────────────────────────────
+
+  # Multilingual embeddings - TRIRIGA doc search layer
+  - model_name: ibm/granite-embedding-278m-multilingual
+    litellm_params:
+      model: watsonx/ibm/granite-embedding-278m-multilingual
+      api_key: os.environ/WATSONX_API_KEY
+      project_id: os.environ/WATSONX_PROJECT_ID
+      api_base: os.environ/WATSONX_URL
+
+  # Lighter retriever embedding
+  - model_name: ibm/slate-125m-english-rtrvr-v2
+    litellm_params:
+      model: watsonx/ibm/slate-125m-english-rtrvr-v2
+      api_key: os.environ/WATSONX_API_KEY
+      project_id: os.environ/WATSONX_PROJECT_ID
+      api_base: os.environ/WATSONX_URL
