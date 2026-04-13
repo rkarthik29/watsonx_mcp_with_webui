@@ -76,7 +76,7 @@ The `.bob/mcp.json` file controls which MCP servers Bob connects to. Add your Do
 
 After saving `mcp.json`, return to **Settings → MCP**. Your server should appear in the MCP server list with a **green dot**, indicating it is connected and healthy.
 
-![MCP server listed as connected with green dot](images/02_bob_mcp_settings.png)
+![MCP server listed as connected with green dot](images/image6.png)
 
 If the dot is red or the server does not appear:
 
