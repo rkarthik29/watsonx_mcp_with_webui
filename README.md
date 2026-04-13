@@ -2,6 +2,7 @@
 1. This is based of the watsonx data MCP retrievar server project (https://github.com/IBM/ibm-watsonxdata-mcp-server)
 2. Pre-requisite
    ```text
+    ├── Copy .env.sample to .env and populate the config values.    
     ├── Watsonx.data service (lite is enough, in a region of your choice)            
     ├── A vaild data API key for a watsonx.data user.
          ├──Should have access to the cluster resources, catalog etc.
